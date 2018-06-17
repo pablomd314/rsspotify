@@ -1,0 +1,11 @@
+This is an RSS server for spotify updates. The plan is to cover the following featueres:
+
+- New Releases (by genre)
+- New Releases (by artist)
+- Playlist updates
+
+Using Flask (Python) for the server architecture.
+
+If you have any desire to contribute, please do!
+
+MIT License
