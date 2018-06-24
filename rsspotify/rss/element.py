@@ -13,9 +13,9 @@ class Element(object):
         return self._attributes
 
     def setAttribute(self, attr_name, attr_value):
-        if not instanceof(attr_name, basestring):
+        if not isinstance(attr_name, basestring):
             raise Exception("attr_name must be string")
-        if not instanceof(attr_value, basestring):
+        if not isinstance(attr_value, basestring):
             raise Exception("attr_value must be string")            
         if len(attr_name) == "":
             raise Exception("attr_name cannot be empty string")
@@ -50,7 +50,7 @@ class Element(object):
             self.addChild(el)
 
     def addChild(self, child):
-        if not instanceof(child, Element):
+        if not isinstance(child, Element):
             raise Exception("child must be an element")
         self._children.append(child)
 
@@ -113,7 +113,7 @@ class TextElement(Element):
         a = len(self.getChildren())
         if a != 1:
             return False
-        a = instanceof(self.getChildren()[0], basestring)
+        a = isinstance(self.getChildren()[0], basestring)
         if not a:
             return False
         return super(TextElement, self).valid()
