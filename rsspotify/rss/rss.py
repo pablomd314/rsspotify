@@ -321,6 +321,9 @@ class RSSElement(element.Element):
     def clearAttributes(self):
         raise Exception("RSSElement needs to have version attribute.")
 
+    def getChannel(self):
+        return self.channel
+
     # rss element can only have 1 child, a channel
     def addChild(self, child):
         raise Exception("RSSElement must have exactly 1 child.")

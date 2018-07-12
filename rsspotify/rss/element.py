@@ -1,11 +1,24 @@
 class Element(object):
-    """docstring for Element"""
-    def __init__(self, tag="element", attributes={}, children=[]):
-        # super(Element, self).__init__()
+    """Base Element class for feedrss"""
+    requiredChildrenTags = {}
+    requiredAttributes = []
+    additionalAttributesAllowed = True
+    selfClosing = False
+
+    def __init__(self, config = {}):
+        children = config.get('children')
+        if children is not None:
+            for child in children:
+                if child.
         self._tag = tag
         self._attributes = attributes
         self._children = children
         
+    def get(self, attr):
+        if attr == "tag":
+            return self.tag
+        return self._attributes.get(attr)
+
     def getTag(self):
         return self._tag
 
