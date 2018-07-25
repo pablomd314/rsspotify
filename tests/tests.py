@@ -8,7 +8,7 @@ def test_RSSElement():
   with open('rss_element.xml') as file:
     x = file.read() 
   config = {
-    "version": "2.0", 
+    "version": "2.0",
     "channel": {
       "title": "FeedForAll Sample Feed",
       "description": "A much shorter description.", 
