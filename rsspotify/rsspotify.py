@@ -1,8 +1,11 @@
 import requests
+import copy
+from . import rss
 
-def getArtistFeed(artist_id):
+
+def getArtistFeed(authorization_token, artist_id):
     api_link = "https://api.spotify.com/v1/artists/{0}/albums".format(artist_id)
-    headers = {"Authorization": "Bearer BQAJpDq3kKA6_G-h1YxadnLONyZZpgZN2BkJODIYVKMTDTpu4QY1CAix-Dfqf44iWLSGyr4CuP3Eo72ThKBV5lG_Sq_8CqhcGKPRClrPZt5SlWJtWLd2Q87LucBbdneDhUW66FexhktYDwg",
+    headers = {"Authorization": "Bearer {0}".format(authorization_token),
     "Content-Type": "application/json", "Accept": "application/json"}
     r = requests.get(api_link, headers=headers)
     config = {
@@ -14,6 +17,11 @@ def getArtistFeed(artist_id):
         "items": []
         }
     }
-    return r.json()
     item = {"title": "RSS Solutions for Restaurants", "description": "Do less."}
-    # config["channel"]["items"].append()
+    for x in r.json()['items']:
+        i = copy.copy(item)
+        i['title'] = x['name']
+        i['description'] = "An album type thing"
+        i['guid'] = x['external_urls']['spotify']
+        config["channel"]["items"].append(i)
+    return rss.RSSElement(config)
