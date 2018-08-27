@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript">
+		async function performQuery() {
+			let search = document.getElementById("search")
+			let query = search.value
+			let response = await fetch(`search?query=${query}`);
+			let data = await response.json();
+			let results_list = document.getElementById("results")
+			results_list.innerHTML = ""
+			if (data.length == 0) {
+				results_list.innerHTML = "No results found :("
+			}
+			for (var i = 0; i < data.length - 1; i++) {
+				artist_name = data[i].name
+				artist_id = data[i].id
+				var template = document.createElement("template")
+				template.innerHTML = `<li id="${artist_id}">${artist_name}: http://localhost:5000/v1/artists/${artist_id}</li>`
+				results_list.appendChild(template.content.firstChild);
+			}
+		}
+	</script>
+	<title>Generate a Feed URL!</title>
+</head>
+<body>
+	Artist Name: <input type="text" placeholder="Search.." id="search">
+	<button onclick="performQuery()">Search Artists</button>
+	<ol id="results"></ol>
+</body>
+</html>
