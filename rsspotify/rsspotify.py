@@ -25,6 +25,7 @@ class SpotifyClient(object):
             raise Exception("Bad request.")
         authorization_code = http_response.split()[1].split("=")[1]
         self.get_tokens(authorization_code)
+        print(self.authorization_token, self.refresh_token)
         if self.authorization_token is None or self.refresh_token is None:
             raise Exception("Failed to get tokens.")
 
@@ -59,10 +60,20 @@ class SpotifyClient(object):
         self.tokensExpiry = time.time() + j.get("expires_in")
         self.authorization_token, self.refresh_token = j.get("access_token"), j.get("refresh_token")
 
+    def refresh_tokens(self):
+        payload = {"grant_type": "refresh_token", 
+        "refresh_token": self.refresh_token, 
+        "client_id": self.client_id, 
+        "client_secret": self.client_secret}
+        r = requests.post(self.TOKEN_URL, data=payload)
+        j = r.json()
+        self.tokensExpiry = time.time() + j.get("expires_in")
+        self.authorization_token = j.get("access_token")        
+
     def get_artist_feed(self, artist_id):
         # check if need to refresh
         if self.tokensExpiry <= time.time():
-            self.get_tokens(self.refresh_token) 
+            self.refresh_tokens()
         api_link = "https://api.spotify.com/v1/artists/{0}/albums".format(artist_id)
         headers = {"Authorization": "Bearer {0}".format(self.authorization_token),
         "Content-Type": "application/json", "Accept": "application/json"}
@@ -81,14 +92,16 @@ class SpotifyClient(object):
             i = copy.copy(item)
             i['title'] = x['name']
             i['description'] = "An album type thing"
-            i['guid'] = x['external_urls']['spotify']
+            i['link'] = x['external_urls']['spotify']
+            # i['pubDate'] = None
+            # i['author'] = x['artists'][0]['name']
             config["channel"]["items"].append(i)
         return rss.RSSElement(config)
 
     def search_for_artists(self, query):
         # check if need to refresh
         if self.tokensExpiry <= time.time():
-            self.get_tokens(self.refresh_token)
+            self.refresh_tokens()
         api_link = "https://api.spotify.com/v1/search?{0}".format(
             urllib.parse.urlencode({
                 "type": "artist", 

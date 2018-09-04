@@ -12,3 +12,6 @@ def imagePrinter(tag, value):
 	children = "\n".join("<{0}>{1}</{0}>".format(k,v) for (k,v) in value.items())
 	ret = "<image>\n{0}\n</image>".format(children)
 	return ret
+
+# def datePrinter(tag, value):
+# do this faggot
