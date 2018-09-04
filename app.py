@@ -33,10 +33,10 @@ def get_artists(artist_id):
     return ""
 
 def main():
-    app.client = rsspotify.SpotifyClient(client_id, client_secret)
+    app.client = rsspotify.SpotifyClient(client_id, client_secret, hostname, port)
     print(app.client.get_artist_feed("1vCWHaC5f2uS3yhpwWbIA6"))
     print(app.client.search_for_artists("Kendrick"))
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=port)
 
 if __name__ == '__main__':
     main()
