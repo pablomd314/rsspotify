@@ -8,7 +8,8 @@ try:
         client_settings = json.load(f)
     client_id = client_settings["client_id"]
     client_secret = client_settings["client_secret"]
-
+    hostname = client_settings["hostname"]
+    port = client_settings["port"]
 except Exception as e:
     raise e
 

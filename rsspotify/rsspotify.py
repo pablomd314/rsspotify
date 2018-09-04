@@ -8,15 +8,16 @@ import socket
 
 class SpotifyClient(object):
     """This class handles all communication with the spotify server"""
-    CALLBACK_HOST = "localhost"
-    CALLBACK_PORT = 5000
     CALLBACK_PATH = "/v1/authorization"
     TOKEN_URL = "https://accounts.spotify.com/api/token"
     # constructor needs to authenticate client
-    def __init__(self, client_id, client_secret):
+    def __init__(self, client_id, client_secret, hostname, port):
+        self.CALLBACK_HOST = hostname
+        self.CALLBACK_PORT = port
         self.client_id = client_id
         self.client_secret = client_secret
-        print("Please authorize app here: {0}".format(get_authorize_link(client_id)))
+        print("Please authorize app here: {0}".format(get_authorize_link(client_id,
+            self.CALLBACK_HOST, self.CALLBACK_PORT)))
         http_response = self.start_callback_server()
 
         # once we've gotten our callback, we have the authorization_code
@@ -117,9 +118,9 @@ class SpotifyClient(object):
         list_of_artists = j.get('artists').get('items')
         return list_of_artists
 
-def get_authorize_link(client_id):
+def get_authorize_link(client_id, hostname, port):
     response_type = "code"
-    redirect_uri = "http://localhost:5000/v1/authorization"
+    redirect_uri = "http://{0}:{1}/v1/authorization".format(hostname, port)
     return "https://accounts.spotify.com/authorize/?{0}".format(
         urllib.parse.urlencode({
             "client_id": client_id, 
