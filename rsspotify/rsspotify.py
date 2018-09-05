@@ -99,7 +99,7 @@ class SpotifyClient(object):
         config = {
         "version": "2.0",
         "channel": {
-            "title": artist_info["name"],
+            "title": "Artist Feed - " + artist_info["name"],
             "description": "A much shorter description.", 
             "link": artist_info["external_urls"]["spotify"],
             "items": []
@@ -111,7 +111,7 @@ class SpotifyClient(object):
             i['title'] = x['name']
             i['description'] = x['album_type'].capitalize()
             i['link'] = x['external_urls']['spotify']
-            i['pubDate'] = datetime.datetime.strptime(x['release_date'], "%Y-%m-%d")
+            i['pubDate'] = generate_datetime(x['release_date'], x['release_date_precision'])
             config["channel"]["items"].append(i)
         return rss.RSSElement(config)
 
@@ -135,4 +135,15 @@ def get_authorize_link(client_id, hostname, port):
             "response_type": response_type,
             "redirect_uri": redirect_uri
         }))
+
+def generate_datetime(date_string, date_precision):
+    if date_precision == "day":
+        x = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+    elif date_precision == "month":
+        x = datetime.datetime.strptime(date_string, "%Y-%m")
+    elif date_precision == "year":
+        x = datetime.datetime.strptime(date_string, "%Y")
+    else:
+        x = datetime.datetime.now()
+    return x
 
