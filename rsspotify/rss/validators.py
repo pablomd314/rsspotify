@@ -1,4 +1,5 @@
 import validators
+import datetime
 
 def allowsNone(f):
 	def wrapper(element):
@@ -43,7 +44,7 @@ def validEnclosure(element) -> bool:
 
 @allowsNone
 def validDate(element) -> bool:
-	return True
+	return isinstance(element, datetime.datetime)
 
 @allowsNone
 @requires_keys('url', 'text')

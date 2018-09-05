@@ -5,6 +5,7 @@ import urllib
 import time
 import requests
 import socket
+import datetime
 
 class SpotifyClient(object):
     """This class handles all communication with the spotify server"""
@@ -31,6 +32,7 @@ class SpotifyClient(object):
             raise Exception("Failed to get tokens.")
 
     def start_callback_server(self):
+        print("!!!! CALLBACK SERVER !!!!")
         HOST = self.CALLBACK_HOST
         PORT = self.CALLBACK_PORT
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -71,43 +73,9 @@ class SpotifyClient(object):
         self.tokensExpiry = time.time() + j.get("expires_in")
         self.authorization_token = j.get("access_token")        
 
-    def get_artist_feed(self, artist_id):
-        # check if need to refresh
+    def get(self, api_link):
         if self.tokensExpiry <= time.time():
             self.refresh_tokens()
-        api_link = "https://api.spotify.com/v1/artists/{0}/albums".format(artist_id)
-        headers = {"Authorization": "Bearer {0}".format(self.authorization_token),
-        "Content-Type": "application/json", "Accept": "application/json"}
-        r = requests.get(api_link, headers=headers)
-        config = {
-        "version": "2.0",
-        "channel": {
-            "title": "FeedForAll Sample Feed",
-            "description": "A much shorter description.", 
-            "link": "http://www.feedforall.com/industry-solutions.htm",
-            "items": []
-            }
-        }
-        item = {"title": "RSS Solutions for Restaurants", "description": "Do less."}
-        for x in r.json()['items']:
-            i = copy.copy(item)
-            i['title'] = x['name']
-            i['description'] = "An album type thing"
-            i['link'] = x['external_urls']['spotify']
-            # i['pubDate'] = None
-            # i['author'] = x['artists'][0]['name']
-            config["channel"]["items"].append(i)
-        return rss.RSSElement(config)
-
-    def search_for_artists(self, query):
-        # check if need to refresh
-        if self.tokensExpiry <= time.time():
-            self.refresh_tokens()
-        api_link = "https://api.spotify.com/v1/search?{0}".format(
-            urllib.parse.urlencode({
-                "type": "artist", 
-                "q": query 
-            }))
         headers = {"Authorization": "Bearer {0}".format(self.authorization_token),
         "Content-Type": "application/json", "Accept": "application/json"}
         try:
@@ -115,6 +83,46 @@ class SpotifyClient(object):
         except Exception as e:
             raise e
         j = r.json()
+        return j
+
+    def get_artist_info(self, artist_id):
+        api_link = "https://api.spotify.com/v1/artists/{0}".format(artist_id)
+        j = self.get(api_link)
+        return j
+
+
+    def get_artist_feed(self, artist_id):
+        # check if need to refresh
+        api_link = "https://api.spotify.com/v1/artists/{0}/albums".format(artist_id)
+        j = self.get(api_link)
+        artist_info = self.get_artist_info(artist_id)
+        config = {
+        "version": "2.0",
+        "channel": {
+            "title": artist_info["name"],
+            "description": "A much shorter description.", 
+            "link": artist_info["external_urls"]["spotify"],
+            "items": []
+            }
+        }
+        item = {"title": "RSS Solutions for Restaurants", "description": "Do less."}
+        for x in j['items']:
+            i = copy.copy(item)
+            i['title'] = x['name']
+            i['description'] = x['album_type'].capitalize()
+            i['link'] = x['external_urls']['spotify']
+            i['pubDate'] = datetime.datetime.strptime(x['release_date'], "%Y-%m-%d")
+            config["channel"]["items"].append(i)
+        return rss.RSSElement(config)
+
+    def search_for_artists(self, query):
+        # check if need to refresh
+        api_link = "https://api.spotify.com/v1/search?{0}".format(
+            urllib.parse.urlencode({
+                "type": "artist", 
+                "q": query 
+            }))
+        j = self.get(api_link)
         list_of_artists = j.get('artists').get('items')
         return list_of_artists
 

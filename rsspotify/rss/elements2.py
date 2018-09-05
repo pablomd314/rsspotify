@@ -56,7 +56,8 @@ class ChannelElement(Element):
         "link": {"validator": lambda x: validRequired(x) and validUrl(x)},
         "language": {"validator": validLanguage}, "copyright": {"validator": validDefault}, 
         "managingEditor": {"validator": validEmail}, "webMaster": {"validator": validEmail},
-        "pubDate": {"validator": validDate}, "lastBuildDate": {"validator": validDate},
+        "pubDate": {"validator": validDate, "printer": datePrinter}, 
+        "lastBuildDate": {"validator": validDate, "printer": datePrinter},
         "category": {"validator": validCategories}, "generator": {"validator": validDefault},
         "docs": {"validator": validUrl}, "cloud": {"validator": validCloud},
         "ttl": {"validator": validInt}, "image": {"validator": validImage, "printer": imagePrinter},
@@ -83,7 +84,7 @@ class ItemElement(Element):
         "author": {"validator": validEmail}, "category": {"validator": validCategory},
         "comments": {"validator": validUrl},
         "enclosure": {"validator": validEnclosure}, "guid": {"validator": validGuid},
-        "pubDate": {"validator": validDate}, "source": {"validator": validSource}
+        "pubDate": {"validator": validDate, "printer": datePrinter}, "source": {"validator": validSource}
     }
 
     def __init__(self, config):

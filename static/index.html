@@ -16,7 +16,10 @@
 				artist_name = data[i].name
 				artist_id = data[i].id
 				var template = document.createElement("template")
-				template.innerHTML = `<li id="${artist_id}">${artist_name}: http://localhost:5000/v1/artists/${artist_id}</li>`
+				let host = window.location.host
+				let protocol = window.location.protocol
+				let link = `${protocol}//${host}/v1/artists/${artist_id}`
+				template.innerHTML = `<li id="${artist_id}">${artist_name}: <a href="${link}">${link}</a></li>`
 				results_list.appendChild(template.content.firstChild);
 			}
 		}

@@ -13,5 +13,8 @@ def imagePrinter(tag, value):
 	ret = "<image>\n{0}\n</image>".format(children)
 	return ret
 
-# def datePrinter(tag, value):
+def datePrinter(tag, value):
+	return "<pubDate>{0}</pubDate>".format(
+		value.strftime("%a, %d %b %Y %H:%M:%S GMT"))
+	
 # do this faggot
