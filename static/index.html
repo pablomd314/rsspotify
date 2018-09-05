@@ -12,7 +12,7 @@
 			if (data.length == 0) {
 				results_list.innerHTML = "No results found :("
 			}
-			for (var i = 0; i < data.length - 1; i++) {
+			for (var i = 0; i < data.length; i++) {
 				artist_name = data[i].name
 				artist_id = data[i].id
 				var template = document.createElement("template")
