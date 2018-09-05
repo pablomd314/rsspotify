@@ -99,8 +99,8 @@ class SpotifyClient(object):
         config = {
         "version": "2.0",
         "channel": {
-            "title": "Artist Feed - " + artist_info["name"],
-            "description": "A much shorter description.", 
+            "title": artist_info["name"] + " (Artist Feed)",
+            "description": "The latest releases by {0}".format(artist_info["name"]), 
             "link": artist_info["external_urls"]["spotify"],
             "items": []
             }
